@@ -11,14 +11,8 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onClose, forceShow = false 
 
   useEffect(() => {
     // If forceShow is true, ignore localStorage and show it
-    if (forceShow) {
-      setIsVisible(true);
-      return;
-    }
-
-    // Otherwise, check localStorage
     const hasSeen = localStorage.getItem('eoe_welcome_seen');
-    if (!hasSeen) {
+    if (forceShow || !hasSeen) {
       setIsVisible(true);
     }
   }, [forceShow]);
@@ -30,6 +24,19 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onClose, forceShow = false 
   };
 
   if (!isVisible) return null;
+
+  // --- Reusable Feature Component ---
+  const FeatureBlock = ({ icon: Icon, title, content, colorClass }: { icon: any, title: string, content: string, colorClass: string }) => (
+    <div className={`flex gap-4 p-3 bg-${colorClass}/10 border border-${colorClass}/30 rounded-lg items-start`}>
+      <div className={`p-2 bg-${colorClass}/20 rounded border border-${colorClass}/30 shrink-0`}>
+        <Icon className={`text-${colorClass}`} size={18} />
+      </div>
+      <div>
+        <h4 className={`text-${colorClass} font-bold text-sm uppercase mb-1`}>{title}</h4>
+        <p className="text-xs text-slate-400 leading-relaxed">{content}</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 z-[300] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-500">
@@ -63,69 +70,48 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onClose, forceShow = false 
             <div className="grid grid-cols-1 gap-4">
                 
                 {/* Feature 1: Mercenary Contracts */}
-                <div className="flex gap-4 p-3 bg-amber-900/10 border border-amber-500/30 rounded-lg items-start">
-                    <div className="p-2 bg-amber-900/20 rounded border border-amber-500/30 shrink-0">
-                        <Coins className="text-amber-400" size={18} />
-                    </div>
-                    <div>
-                        <h4 className="text-amber-200 font-bold text-sm uppercase mb-1">Mercenary Contracts (Gold Tax)</h4>
-                        <p className="text-xs text-slate-400 leading-relaxed">
-                            Your role defines efficiency, but **Gold is Agency**. You can perform **ANY action** (Attack ⚔️, Build 🔨, Expand 🧭) regardless of your chosen Citizen Role by paying a **Mercenary Tax of 2 Gold**.
-                        </p>
-                    </div>
-                </div>
+                <FeatureBlock 
+                    icon={Coins} 
+                    title="Mercenary Contracts (Gold Tax)" 
+                    content="Your role defines efficiency, but **Gold is Agency**. You can perform **ANY action** (Attack ⚔️, Build 🔨, Expand 🧭) regardless of your chosen Citizen Role by paying a **Mercenary Tax of 2 Gold**." 
+                    colorClass="amber"
+                />
 
                 {/* Feature 2: Adrenaline System */}
-                <div className="flex gap-4 p-3 bg-green-900/10 border border-green-500/30 rounded-lg items-start">
-                    <div className="p-2 bg-green-900/20 rounded border border-green-500/30 shrink-0">
-                        <Zap className="text-green-400" size={18} />
-                    </div>
-                    <div>
-                        <h4 className="text-green-200 font-bold text-sm uppercase mb-1">Adrenaline System (Fatigue Fix)</h4>
-                        <p className="text-xs text-slate-400 leading-relaxed">
-                            Your armies are energized. The **first two actions** you take each round are performed at **Standard Cost** (no Fatigue penalty). Only the **third action and beyond** incurs extra cost.
-                        </p>
-                    </div>
-                </div>
+                <FeatureBlock 
+                    icon={Zap} 
+                    title="Adrenaline System (Fatigue Fix)" 
+                    content="Your armies are energized. The **first two actions** you take each round are performed at **Standard Cost**. Only the **third action and beyond** incurs extra cost." 
+                    colorClass="green"
+                />
                 
                 {/* Feature 3: Trap Mechanic */}
-                <div className="flex gap-4 p-3 bg-purple-900/10 border border-purple-500/30 rounded-lg items-start">
-                    <div className="p-2 bg-purple-900/20 rounded border border-purple-500/30 shrink-0">
-                        <AlertTriangle className="text-purple-400" size={18} />
-                    </div>
-                    <div>
-                        <h4 className="text-purple-200 font-bold text-sm uppercase mb-1">Weaponized Bluffing (The Trap)</h4>
-                        <p className="text-xs text-slate-400 leading-relaxed">
-                            You can declare a tile a **Trap** on claim. If an enemy attempts to Attack ⚔️ the Trap, their attack fails, and they suffer **-2 Grain damage**.
-                        </p>
-                    </div>
-                </div>
+                <FeatureBlock 
+                    icon={AlertTriangle} 
+                    title="Weaponized Bluffing (The Trap)" 
+                    content="You can declare a tile a **Trap** on claim. If an enemy attempts to Attack ⚔️ the Trap, their attack fails, and they suffer **-2 Grain damage**." 
+                    colorClass="purple"
+                />
                 
                 {/* Feature 4: Challenge Modes */}
-                <div className="flex gap-4 p-3 bg-red-900/10 border border-red-500/30 rounded-lg items-start">
-                    <div className="p-2 bg-red-900/20 rounded border border-red-500/30 shrink-0">
-                        <Skull className="text-red-400" size={18} />
-                    </div>
-                    <div>
-                        <h4 className="text-red-200 font-bold text-sm uppercase mb-1">Challenge Mode vs. Casual Mode</h4>
-                        <p className="text-xs text-slate-400 leading-relaxed">
-                            Choose your risk: **Standard Mode** punishes false accusations with a **Turn Lost** penalty, while **Casual Mode** uses a fine of **2 Gold**.
-                        </p>
-                    </div>
-                </div>
-                
+                <FeatureBlock 
+                    icon={Skull} 
+                    title="Challenge Mode vs. Casual Mode" 
+                    content="Choose your risk: **Standard Mode** punishes false accusations with a **Turn Lost** penalty, while **Casual Mode** uses a fine of **2 Gold**." 
+                    colorClass="red"
+                />
             </div>
             
             {/* Instructional Guidance for Beginners (NEW SECTION) */}
-            <div className="walkthrough-section" style="margin-top: 20px; border-top: 1px dashed #475569;">
-                <h4 class="text-slate-500 font-bold text-xs uppercase tracking-widest pt-4 mb-2">GUIDANCE: YOUR FIRST TURN</h4>
-                <p class="text-xs text-slate-300">
+            <div className="mt-8 border-t border-slate-700/50 pt-4">
+                <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-2">GUIDANCE: YOUR FIRST TURN</h4>
+                <p className="text-xs text-slate-300 mb-2">
                     1. **Income:** Every Capital (⭐) produces 1 Grain, 1 Stone, and 1 Gold. Collect this secretly first.
                 </p>
-                <p class="text-xs text-slate-300">
+                <p className="text-xs text-slate-300 mb-2">
                     2. **First Choice:** Choose the **Explorer 🧭** role in the Council Phase. Expanding early is the fastest way to grow your income base.
                 </p>
-                <p class="text-xs text-slate-300">
+                <p className="text-xs text-slate-300">
                     3. **First Action:** Immediately use the Explorer action to claim an adjacent tile, converting your starting Grain into potential long-term income.
                 </p>
             </div>
