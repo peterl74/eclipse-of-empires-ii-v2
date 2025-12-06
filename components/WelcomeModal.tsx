@@ -7,22 +7,15 @@ interface WelcomeModalProps {
 }
 
 const WelcomeModal: React.FC<WelcomeModalProps> = ({ onClose, forceShow = false }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  // Set isVisible state to true immediately, ignoring any previous state or logic.
+  const [isVisible, setIsVisible] = useState(true); 
 
-  useEffect(() => {
-    // Check localStorage. If the 'seen' flag is NOT present, show the modal.
-    const hasSeen = localStorage.getItem('eoe_welcome_seen');
-    
-    // If forceShow is true, or if localStorage has no 'seen' flag, set visibility to true.
-    if (forceShow || !hasSeen) {
-      setIsVisible(true);
-    }
-  // The empty dependency array ensures this check runs only once after the initial render.
-  }, [forceShow]); 
+  // EFFECT REMOVED: No need for useEffect or localStorage check.
+  // The handleClose function must now only call onClose.
 
   const handleClose = () => {
-    // Set the flag so the modal doesn't appear on subsequent loads
-    localStorage.setItem('eoe_welcome_seen', 'true');
+    // We only set isVisible to false to close the modal for the current session.
+    // We explicitly DO NOT set localStorage('eoe_welcome_seen', 'true').
     setIsVisible(false);
     onClose();
   };
@@ -56,7 +49,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onClose, forceShow = false 
 
         {/* Header */}
         <div className="bg-[#1e293b] p-6 border-b border-slate-700 text-center relative shrink-0">
-            <div className className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(202,138,4,0.15),_transparent_70%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(202,138,4,0.15),_transparent_70%)]" />
             <h2 className="text-[#fcd34d] font-title text-3xl font-bold uppercase tracking-widest relative z-10">
                 Welcome to the Eclipse
             </h2>
