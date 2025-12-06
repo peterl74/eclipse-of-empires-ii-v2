@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { X, BookOpen, Trophy, Map, Users, Target, Zap, Crown, Settings, Box, Sword, Info, Scroll, ShieldAlert, HelpCircle } from 'lucide-react';
 
@@ -22,6 +20,7 @@ interface Category {
 }
 
 const GUIDE_DATA: Category[] = [
+    // 1. Core Rules & Engine (Adding V2.5 Fatigue/Adrenaline Fixes)
     {
       id: "mechanics",
       title: "Core Rules & Engine",
@@ -38,12 +37,12 @@ const GUIDE_DATA: Category[] = [
           ]
         },
         {
-          heading: "Fatigue System",
+          heading: "The Adrenaline System (Fatigue - v2.5 Update)",
           content: [
             "Taking multiple actions in a single round becomes increasingly exhausting.",
             "Action 1: Standard Cost (+0 Fatigue).",
-            "Action 2: Standard Cost + 1 Resource.",
-            "Action 3: Standard Cost + 2 Resources.",
+            "Action 2: Standard Cost (+0 Fatigue).", // ESSENTIAL V2.5 FIX: Second action is now free.
+            "Action 3 and beyond: Standard Cost + 1 Resource.",
             "Fatigue increments by 1 for each subsequent action within the same round. It resets to 0 at the start of the next Action Phase.",
             "This applies to ALL actions (Attacking, Expanding, Trading, Fortifying)."
           ]
@@ -54,14 +53,22 @@ const GUIDE_DATA: Category[] = [
         }
       ]
     },
+    // 2. Bluffing & Challenges (Adding V2.5 Trap and confirming Challenge Outcomes)
     {
       id: "bluffing",
       title: "Bluffing & Challenges",
       icon: <ShieldAlert size={18} />,
       sections: [
         {
-          heading: "Declarations",
-          content: "When you Expand, you must publicly Declare what type of land you found. You may lie (e.g., claim a Goldmine is Plains). Private Truth is visible only to you."
+          heading: "Declarations & The Trap (v2.5)", // HEADING EDITED
+          content: [
+              "When you Expand, you must publicly Declare what type of land you found. You may lie (e.g., claim a Goldmine is Plains). Private Truth is visible only to you.",
+              "**New:** You may declare the tile to be a **Trap** (True Type becomes Trap in your Ledger)."
+          ],
+          tableData: [
+              { label: "Trap Trigger", value: "Opponent uses a **Warrior (Attack)** action on the tile." },
+              { label: "Trap Consequence", value: "Attack fails; Attacker pays cost and suffers **-2 Grain damage**; Tile reverts to Neutral Fog." }
+          ]
         },
         {
           heading: "Interception (Challenging)",
@@ -86,6 +93,7 @@ const GUIDE_DATA: Category[] = [
         }
       ]
     },
+    // 3. Game Modes & AI (Adding Elimination Nuance)
     {
       id: "modes",
       title: "Game Modes & AI",
@@ -100,31 +108,43 @@ const GUIDE_DATA: Category[] = [
           ]
         },
         {
-          heading: "Rulesets",
+          heading: "Rulesets & Elimination Nuance", // HEADING EDITED
+          content: [
+             "**Casual Mode Nuance:** Elimination is removed. If you lose your Capital, you lose all resources but **retreat to an empty edge tile** to rebuild (1 round of immunity)."
+          ],
           tableData: [
-            { label: "Standard", value: "Hardcore. False Accusations = Turn Lost. Recommended for strategy veterans." },
-            { label: "Casual", value: "Forgiving. False Accusations = Gold Fine. Recommended for learning." }
+            { label: "Standard", value: "Hardcore. False Accusations = Turn Lost. Elimination is active." },
+            { label: "Casual", value: "Forgiving. False Accusations = Gold Fine. Elimination is removed (Retreat Rule)." }
           ]
         }
       ]
     },
+    // 4. The Council (Classes) (Adding V2.5 Mercenary Contracts)
     {
       id: "classes",
       title: "The Council (Classes)",
       icon: <Crown size={18} />,
       sections: [
         {
-          heading: "Citizen Roles",
-          content: "Chosen secretly at the start of Phase II. Costs increase with Fatigue.",
+          heading: "Citizen Roles & Mercenary Contracts (v2.5)", // HEADING EDITED
+          content: [
+            "Chosen secretly at the start of Phase II. Costs increase with Fatigue.",
+            "**Mercenary Action:** Any player may perform **ANY** action regardless of their role by paying **Standard Cost + 2 Gold Tax**."
+          ],
           tableData: [
-            { label: "Warrior", value: "Action: Attack. Loot 1 Resource on win. Base Cost: 1 Grain." },
-            { label: "Builder", value: "Action: Fortify. +1 Defense/Production. Base Cost: 2 Stone." },
-            { label: "Merchant", value: "Action: Trade. 2 Grain -> 1 Gold. Base Cost: 2 Grain." },
-            { label: "Explorer", value: "Action: Expand. Claim Neutral/Fog tiles. Base Cost: 1 Grain." }
+            { label: "Warrior (Attack)", value: "Base Cost: 1 Grain (Class Action). Merc Tax: +2 Gold." },
+            { label: "Builder (Fortify)", value: "Base Cost: 2 Stone (Class Action). Merc Tax: +2 Gold." },
+            { label: "Merchant (Trade)", value: "Base Cost: 2 Grain (Class Action). Merc Tax: +2 Gold." },
+            { label: "Explorer (Expand)", value: "Base Cost: 1 Grain (Class Action). Merc Tax: +2 Gold." }
           ]
+        },
+        {
+            heading: "Emergency Market Nuance", // NEW SECTION
+            content: "The Emergency Market can be used by any player for 3 of ANY resource to gain 1 Grain. This action is **not** subject to the Mercenary Tax."
         }
       ]
     },
+    // 5. Relic Powers
     {
       id: "relics",
       title: "Relic Powers",
@@ -146,6 +166,7 @@ const GUIDE_DATA: Category[] = [
         }
       ]
     },
+    // 6. Warfare Math
     {
       id: "combat",
       title: "Warfare Math",
@@ -161,12 +182,13 @@ const GUIDE_DATA: Category[] = [
         {
           heading: "Outcomes",
           content: [
-            "Win: Defender loses tile. Fortification destroyed. Attacker occupies and LOOTS 1 Resource.",
+            "Win: Defender loses tile. Fortification destroyed. Attacker occupies and LOOTS 1 Resource. Defender loses ties.", // EDITED FOR CLARITY
             "Loss/Tie: Nothing changes. Attacker still pays cost."
           ]
         }
       ]
     },
+    // 7. Map & Events
     {
       id: "map",
       title: "Map & Events",
@@ -178,12 +200,13 @@ const GUIDE_DATA: Category[] = [
             { label: "Plains", value: "Produces Grain (Food/Fuel)" },
             { label: "Mountains", value: "Produces Stone (Building)" },
             { label: "Goldmine", value: "Produces Gold (Wildcard/VP)" },
-            { label: "Ruins", value: "One-time scavenge for Event Cards." },
+            { label: "Ruins", value: "One-time scavenge for Event Cards. Converts to Plains on use." }, // EDITED FOR CLARITY
             { label: "Relic Sites", value: "Grants Relic Token + Power. (Rare)" }
           ]
         }
       ]
     },
+    // 8. Objectives (VP)
     {
       id: "objectives",
       title: "Objectives (VP)",
@@ -201,6 +224,7 @@ const GUIDE_DATA: Category[] = [
         }
       ]
     },
+    // 9. FAQ & Errata
     {
       id: "faq",
       title: "FAQ & Errata",
@@ -242,6 +266,7 @@ const GUIDE_DATA: Category[] = [
         }
       ]
     },
+    // 10. The Strategos' Log
     {
       id: "log",
       title: "The Strategos' Log",
@@ -347,17 +372,17 @@ const GUIDE_DATA: Category[] = [
         }
       ]
     },
+    // 11. CREDITS (Corrected to original format and content, updated to v2.5 status)
     {
       id: "credits",
       title: "Credits & Acknowledgments",
       icon: <Info size={18} />,
       sections: [
         {
-          heading: "ECLIPSE OF EMPIRES II Prototype Edition v2.4",
+          heading: "ECLIPSE OF EMPIRES II Prototype Edition v2.5", // HEADING CORRECTED TO V2.5
           content: [
-            "Game Design & Concept: Peter Loizou",
-            "Playtesting & Development: Tested in Bridport, UK.",
-            "Status: Work in Progress. Not for resale."
+            "Game Design & Concept: Peter Loizou.", // CONTENT CORRECTED
+            "Status: Warlord Update. Not for resale." // CONTENT CORRECTED
           ]
         },
         {
@@ -367,7 +392,7 @@ const GUIDE_DATA: Category[] = [
         {
           heading: "Contact & Feedback",
           tableData: [
-              { label: "Feedback", value: "Email Designer", href: "mailto:peterloizou@gmail.com" }
+            { label: "Feedback", value: "Email Designer", href: "mailto:peterloizou@gmail.com" }
           ]
         }
       ]
@@ -375,118 +400,118 @@ const GUIDE_DATA: Category[] = [
 ];
 
 const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
-  const [activeTab, setActiveTab] = useState('mechanics');
+  const [activeTab, setActiveTab] = useState('mechanics');
 
-  if (!isOpen) return null;
+  if (!isOpen) return null;
 
-  const activeCategory = GUIDE_DATA.find(c => c.id === activeTab);
+  const activeCategory = GUIDE_DATA.find(c => c.id === activeTab);
 
-  return (
-    <div className="fixed inset-0 z-[300] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in">
-      <div className="bg-[#0f172a] border border-[#ca8a04] w-full max-w-5xl h-[85vh] rounded-lg shadow-2xl flex overflow-hidden relative">
-        {/* Close Button */}
-        <button 
-          onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white z-10 p-2 bg-slate-800 rounded-full transition-colors hover:bg-slate-700"
-        >
-          <X size={20} />
-        </button>
+  return (
+    <div className="fixed inset-0 z-[300] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in">
+      <div className="bg-[#0f172a] border border-[#ca8a04] w-full max-w-5xl h-[85vh] rounded-lg shadow-2xl flex overflow-hidden relative">
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 text-slate-400 hover:text-white z-10 p-2 bg-slate-800 rounded-full transition-colors hover:bg-slate-700"
+        >
+          <X size={20} />
+        </button>
 
-        {/* Sidebar */}
-        <div className="w-16 md:w-64 bg-[#1e293b] border-r border-slate-700 flex flex-col shrink-0">
-          <div className="p-4 md:p-6 border-b border-slate-700">
-            <h2 className="text-[#fcd34d] font-title text-xl leading-none hidden md:block">Field Manual</h2>
-            <h2 className="text-[#fcd34d] font-title text-xl leading-none md:hidden text-center">FM</h2>
-            <span className="text-[10px] text-slate-500 uppercase tracking-widest hidden md:block">Ver 2.4-Dev</span>
-          </div>
-          <div className="flex-1 overflow-y-auto py-2 custom-scrollbar">
-            {GUIDE_DATA.map(category => (
-              <button
-                key={category.id}
-                onClick={() => setActiveTab(category.id)}
-                title={category.title}
-                className={`w-full px-2 md:px-6 py-4 flex items-center justify-center md:justify-start gap-3 text-sm font-bold uppercase tracking-wide transition-colors
-                  ${activeTab === category.id 
-                    ? 'bg-[#ca8a04]/10 text-[#fcd34d] border-r-2 border-[#fcd34d]' 
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200 border-r-2 border-transparent'}
-                `}
-              >
-                {category.icon}
-                <span className="hidden md:block">{category.title}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Sidebar */}
+        <div className="w-16 md:w-64 bg-[#1e293b] border-r border-slate-700 flex flex-col shrink-0">
+          <div className="p-4 md:p-6 border-b border-slate-700">
+            <h2 className="text-[#fcd34d] font-title text-xl leading-none hidden md:block">FIELD MANUAL</h2>
+            <h2 className="text-[#fcd34d] font-title text-xl leading-none md:hidden text-center">FM</h2>
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest hidden md:block">VER 2.5 (WARLORD UPDATE)</span> {/* EDITED VERSION HERE */}
+          </div>
+          <div className="flex-1 overflow-y-auto py-2 custom-scrollbar">
+            {GUIDE_DATA.map(category => (
+              <button
+                key={category.id}
+                onClick={() => setActiveTab(category.id)}
+                title={category.title}
+                className={`w-full px-2 md:px-6 py-4 flex items-center justify-center md:justify-start gap-3 text-sm font-bold uppercase tracking-wide transition-colors
+                  ${activeTab === category.id 
+                    ? 'bg-[#ca8a04]/10 text-[#fcd34d] border-r-2 border-[#fcd34d]' 
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200 border-r-2 border-transparent'}
+                `}
+              >
+                {category.icon}
+                <span className="hidden md:block">{category.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-[#0b0a14] text-[#e2d9c5] custom-scrollbar scroll-smooth">
-          {activeCategory && (
-            <div className="max-w-3xl mx-auto animate-in slide-in-from-bottom-2 fade-in duration-300">
-              <div className="flex items-center gap-3 border-b border-slate-800 pb-4 mb-6">
-                 <div className="p-2 bg-slate-800 rounded-lg">
-                    {React.cloneElement(activeCategory.icon as React.ReactElement<any>, { size: 28, className: "text-[#ca8a04]" })}
-                 </div>
-                 <h2 className="text-3xl font-title text-white">{activeCategory.title}</h2>
-              </div>
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-[#0b0a14] text-[#e2d9c5] custom-scrollbar scroll-smooth">
+          {activeCategory && (
+            <div className="max-w-3xl mx-auto animate-in slide-in-from-bottom-2 fade-in duration-300">
+              <div className="flex items-center gap-3 border-b border-slate-800 pb-4 mb-6">
+                 <div className="p-2 bg-slate-800 rounded-lg">
+                    {React.cloneElement(activeCategory.icon as React.ReactElement<any>, { size: 28, className: "text-[#ca8a04]" })}
+                 </div>
+                 <h2 className="text-3xl font-title text-white">{activeCategory.title}</h2>
+              </div>
 
-              <div className="space-y-8">
-                  {activeCategory.sections.map((section, idx) => (
-                      <div key={idx} className="bg-[#1e293b]/50 rounded-lg p-5 border border-slate-800">
-                          <h3 className="text-[#fcd34d] font-bold text-lg mb-3 flex items-center gap-2">
-                             <div className="w-1.5 h-4 bg-[#fcd34d] rounded-sm"></div>
-                             {section.heading}
-                          </h3>
-                          
-                          {section.content && (
-                              <div className="text-slate-300 text-sm leading-relaxed mb-4">
-                                  {Array.isArray(section.content) ? (
-                                      <ul className="space-y-2">
-                                          {section.content.map((line, i) => (
-                                              <li key={i} className="flex items-start gap-2">
-                                                  <div className="w-1 h-1 bg-slate-500 rounded-full mt-2 shrink-0"></div>
-                                                  <span>{line}</span>
-                                              </li>
-                                          ))}
-                                      </ul>
-                                  ) : (
-                                      <p>{section.content}</p>
-                                  )}
-                              </div>
-                          )}
+              <div className="space-y-8">
+                  {activeCategory.sections.map((section, idx) => (
+                      <div key={idx} className="bg-[#1e293b]/50 rounded-lg p-5 border border-slate-800">
+                          <h3 className="text-[#fcd34d] font-bold text-lg mb-3 flex items-center gap-2">
+                             <div className="w-1.5 h-4 bg-[#fcd34d] rounded-sm"></div>
+                             {section.heading}
+                          </h3>
+                          
+                          {section.content && (
+                              <div className="text-slate-300 text-sm leading-relaxed mb-4">
+                                  {Array.isArray(section.content) ? (
+                                      <ul className="space-y-2">
+                                          {section.content.map((line, i) => (
+                                              <li key={i} className="flex items-start gap-2">
+                                                  <div className="w-1 h-1 bg-slate-500 rounded-full mt-2 shrink-0"></div>
+                                                  <span>{line}</span>
+                                              </li>
+                                          ))}
+                                      </ul>
+                                  ) : (
+                                      <p>{section.content}</p>
+                                  )}
+                              </div>
+                          )}
 
-                          {section.tableData && (
-                              <div className="grid gap-2">
-                                  {section.tableData.map((row, i) => (
-                                      <div key={i} className="flex flex-col md:flex-row md:items-center justify-between bg-black/20 p-3 rounded border border-slate-700/50 hover:border-slate-600 transition-colors">
-                                          <span className="font-bold text-slate-200 text-sm mb-1 md:mb-0 w-1/3">{row.label}</span>
-                                          {row.href ? (
-                                              <a href={row.href} className="text-[#fcd34d] hover:underline hover:text-yellow-300 text-xs md:text-sm md:text-right flex-1 transition-colors">
-                                                  {row.value}
-                                              </a>
-                                          ) : row.value.includes('@') ? (
-                                              <a href={`mailto:${row.value}`} className="text-[#fcd34d] hover:underline hover:text-yellow-300 text-xs md:text-sm md:text-right flex-1 transition-colors font-mono">
-                                                  {row.value}
-                                              </a>
-                                          ) : (
-                                              <span className="text-slate-400 text-xs md:text-sm md:text-right flex-1">{row.value}</span>
-                                          )}
-                                      </div>
-                                  ))}
-                              </div>
-                          )}
-                      </div>
-                  ))}
-              </div>
+                          {section.tableData && (
+                              <div className="grid gap-2">
+                                  {section.tableData.map((row, i) => (
+                                      <div key={i} className="flex flex-col md:flex-row md:items-center justify-between bg-black/20 p-3 rounded border border-slate-700/50 hover:border-slate-600 transition-colors">
+                                          <span className="font-bold text-slate-200 text-sm mb-1 md:mb-0 w-1/3">{row.label}</span>
+                                          {row.href ? (
+                                              <a href={row.href} className="text-[#fcd34d] hover:underline hover:text-yellow-300 text-xs md:text-sm md:text-right flex-1 transition-colors">
+                                                  {row.value}
+                                              </a>
+                                          ) : row.value.includes('@') ? (
+                                              <a href={`mailto:${row.value}`} className="text-[#fcd34d] hover:underline hover:text-yellow-300 text-xs md:text-sm md:text-right flex-1 transition-colors font-mono">
+                                                  {row.value}
+                                              </a>
+                                          ) : (
+                                              <span className="text-slate-400 text-xs md:text-sm md:text-right flex-1">{row.value}</span>
+                                          )}
+                                      </div>
+                                  ))}
+                              </div>
+                          )}
+                      </div>
+                  ))}
+              </div>
 
-              <div className="mt-12 text-center text-slate-600 text-[10px] uppercase tracking-widest">
-                  Eclipse of Empires II • Strategic Archives
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+              <div className="mt-12 text-center text-slate-600 text-[10px] uppercase tracking-widest">
+                  Eclipse of Empires II • Strategic Archives
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default HelpModal;
