@@ -10,14 +10,18 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onClose, forceShow = false 
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // If forceShow is true, ignore localStorage and show it
+    // Check localStorage. If the 'seen' flag is NOT present, show the modal.
     const hasSeen = localStorage.getItem('eoe_welcome_seen');
+    
+    // If forceShow is true, or if localStorage has no 'seen' flag, set visibility to true.
     if (forceShow || !hasSeen) {
       setIsVisible(true);
     }
-  }, [forceShow]);
+  // The empty dependency array ensures this check runs only once after the initial render.
+  }, [forceShow]); 
 
   const handleClose = () => {
+    // Set the flag so the modal doesn't appear on subsequent loads
     localStorage.setItem('eoe_welcome_seen', 'true');
     setIsVisible(false);
     onClose();
@@ -25,7 +29,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onClose, forceShow = false 
 
   if (!isVisible) return null;
 
-  // --- Reusable Feature Component ---
+  // --- Reusable Feature Component (Retained original styling) ---
   const FeatureBlock = ({ icon: Icon, title, content, colorClass }: { icon: any, title: string, content: string, colorClass: string }) => (
     <div className={`flex gap-4 p-3 bg-${colorClass}/10 border border-${colorClass}/30 rounded-lg items-start`}>
       <div className={`p-2 bg-${colorClass}/20 rounded border border-${colorClass}/30 shrink-0`}>
@@ -52,7 +56,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ onClose, forceShow = false 
 
         {/* Header */}
         <div className="bg-[#1e293b] p-6 border-b border-slate-700 text-center relative shrink-0">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(202,138,4,0.15),_transparent_70%)]" />
+            <div className className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(202,138,4,0.15),_transparent_70%)]" />
             <h2 className="text-[#fcd34d] font-title text-3xl font-bold uppercase tracking-widest relative z-10">
                 Welcome to the Eclipse
             </h2>
